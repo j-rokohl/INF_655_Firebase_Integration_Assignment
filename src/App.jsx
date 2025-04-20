@@ -1,20 +1,73 @@
-import './App.css'
-import Greeting from './components/Greeting';
-import UserInfo from './components/UserInfo';
-import TaskComponent from './components/TaskComponent';
+import "./App.css";
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import Header from './pages/Header';
+import Footer from "./pages/Footer";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import NotFound from "./pages/NotFound";
+import TaskRoutes from "./routes/TaskRoutes";
+import { TaskProvider } from "./components/context/TaskContext";
+import SignInForm from "./pages/SignInForm"; 
+import { AuthContextProvider} from "./components/context/AuthContext";
+import ProfilePage from "./pages/ProfilePage";
+import ProtectedRoute from "./routes/ProtectedRoute"; 
 
-function App() {
-  return (
-    <div className='App'>
-       <h1>Assignment 1</h1>
-       <div className="task">Task 1: Create a React Component Using JSX</div>
-       <Greeting />
-       <div className="task">Task 2: Create a Class Component and Use JSX</div>
-       <UserInfo />
-       <div className="task">Task 3: Dynamic Content Using JSX and React Components</div>
-       <TaskComponent />
-    </div>
-  )
+
+export default function App() {
+
+  return ( 
+    <>
+      <AuthContextProvider>
+        <TaskProvider>
+          <BrowserRouter>
+            <Header /> 
+            <Routes>
+              <Route path="/" element={<SignInForm />} />
+              <Route path="/signin" element={<SignInForm />} />
+              {/* <Route path="/signIn" element={< />} /> */}
+              {/* <Route path="/about" element={<AboutPage />} /> */}
+              {/* <Route path="/task/*" element={<TaskRoutes />} /> */}
+
+              <Route 
+                path="/home" 
+                element={
+                  <ProtectedRoute>
+                    <HomePage /> 
+                  </ProtectedRoute>
+                }/>
+
+              <Route 
+                path="/about" 
+                element={
+                  <ProtectedRoute>
+                    <AboutPage />
+                  </ProtectedRoute>
+                }/>
+
+              <Route 
+                path="/task/*" 
+                element={ 
+                  <ProtectedRoute>
+                    <TaskRoutes />
+                  </ProtectedRoute>
+                }/> 
+
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }/>
+
+              <Route path="*" element={<NotFound />} />
+
+              </Routes>
+            <Footer />
+          </BrowserRouter>
+        </TaskProvider>
+      </AuthContextProvider>
+    </>
+
+  );
 }
-
-export default App;
